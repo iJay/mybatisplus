@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 该文件是mybatis的映射文件，用于实现sql语句与java方法的映射 -->
+<mapper namespace="com.example.mybatisplus.mapper.UserMapper">
+    <!-- 该方法用于查询id为id的用户信息，返回Map类型的数据 -->
+    <select id="selectMapById" resultType="map">
+        select * from user where id = #{id}
+    </select>
+</mapper>

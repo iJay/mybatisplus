@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: MybatisPlusApp
+    port: 8080
+  datasource:
+    # 数据源类型 HikariDataSource是springboot默认的数据源
+    type: com.zaxxer.hikari.HikariDataSource
+    # 数据库驱动 如果驱动类是5版本的就用com.mysql.jdbc.Driver 这里是8版本的就用com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库连接地址 mysql8版本的url要加上serverTimezone=GMT%2B8 否则会报错； GMT%2B8是东八区的意思
+    url: jdbc:mysql://localhost:3306/mybatis_plus?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezono=GMT%2B8
+    username: root
+    password: 1234
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印sql语句 这个是mybatis-plus自带的
+  mapper-locations: classpath:mapper/**/*.xml # mapper.xml文件的位置 classpath:mapper/**/*.xml是默认的位置
+  global-config:
+    db-config:
+      table-prefix: t_ # 统一设置实体类对应的表名的前缀
+      id-type: assign_id # 主键生成策略 默认是雪花算法
