@@ -1,7 +1,7 @@
 package com.example.mybatisplus;
 
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.mybatisplus.mapper.UserMapper;
 import com.example.mybatisplus.pojo.User;
 import org.junit.jupiter.api.Test;
@@ -75,4 +75,38 @@ public class MybatisPlusWrapperTest {
         int update = userMapper.update(user, userQueryWrapper);
         System.out.println("update: " + update);
     }
+
+    @Test
+    public void testWrapper06 () {
+        // SELECT user_name,age,email FROM t_user WHERE is_deleted=0
+        // 查询用户名 年龄 邮箱信息
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.select("user_name", "age", "email");
+        userMapper.selectList(userQueryWrapper).forEach(System.out::println);
+    }
+
+    /**
+     * 子查询语句
+     */
+    @Test
+    public void testWrapper07 () {
+        // SELECT id,user_name,age AS userAge,email,is_deleted FROM t_user WHERE is_deleted=0 AND (id IN (Select id from t_user where id <= 100))
+        // 查询id小于等于100的用户信息
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper
+                .inSql("id", "select id from t_user where id <= 100");
+        List<User> users = userMapper.selectList(userQueryWrapper);
+        users.forEach(System.out::println);
+    }
+
+    @Test
+    public void testWrapper08 () {
+        // UPDATE t_user SET user_name=?,email=? WHERE is_deleted=0 AND (user_name LIKE ? AND (age > ? OR email IS NULL))
+        // 用户名含有a 并且 (年龄大于100或者邮箱为null)的用户信息修改
+        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+        userUpdateWrapper.like("user_name", "a").and(i -> i.gt("age", 100).or().isNull("email")).set("user_name", "小黑").set("email", "hblx2022@163.com");
+        int update = userMapper.update(null, userUpdateWrapper);
+        System.out.println("update: " + update);
+    }
+
 }
