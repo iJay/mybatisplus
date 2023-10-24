@@ -2,6 +2,7 @@ package com.example.mybatisplus;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.mybatisplus.mapper.UserMapper;
 import com.example.mybatisplus.pojo.User;
 import org.junit.jupiter.api.Test;
@@ -109,4 +110,42 @@ public class MybatisPlusWrapperTest {
         System.out.println("update: " + update);
     }
 
+    /**
+     * 模拟开发中的组装条件
+     * 这种判断太过繁琐
+     */
+    @Test
+    public void testWrapper09 () {
+        // SELECT id,user_name,age AS userAge,email,is_deleted FROM t_user WHERE is_deleted=0 AND (age >= ? AND age <= ?)
+        String name = "";
+        Integer ageBegin = 20;
+        Integer ageEnd = 30;
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(name)) { // 判断name不为空字符串 不为空白字符串 不为null
+            userQueryWrapper.like("user_name", name);
+        }
+        if(ageBegin != null) {
+            userQueryWrapper.ge("age", ageBegin);
+        }
+        if (ageEnd != null) {
+            userQueryWrapper.le("age", ageEnd);
+        }
+        userMapper.selectList(userQueryWrapper).forEach(System.out::println);
+    }
+
+    /**
+     * 使用condition解决上述判断繁琐的问题
+     */
+    @Test
+    public void testWrapper10 () {
+        // SELECT id,user_name,age AS userAge,email,is_deleted FROM t_user WHERE is_deleted=0 AND (User_name LIKE ? AND age <= ?)
+        String name = "a";
+        Integer ageBegin = null;
+        Integer ageEnd = 30;
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.like(StringUtils.isNotBlank(name), "User_name", name)
+                .ge(ageBegin != null, "age", ageBegin)
+                .le(ageEnd != null, "age", ageEnd);
+        userMapper.selectList(userQueryWrapper).forEach(System.out::println);
+    }
 }
