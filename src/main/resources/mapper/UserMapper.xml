@@ -6,6 +6,10 @@
 <mapper namespace="com.example.mybatisplus.mapper.UserMapper">
     <!-- 该方法用于查询id为id的用户信息，返回Map类型的数据 -->
     <select id="selectMapById" resultType="map">
-        select * from user where id = #{id}
+        select * from t_user where id = #{id}
+    </select>
+
+    <select id="selectPageVo" resultType="com.example.mybatisplus.pojo.User">
+        select id,user_name,age,email from t_user where age > #{age}
     </select>
 </mapper>

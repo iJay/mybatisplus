@@ -16,7 +16,7 @@ class MybatisplusApplicationTests {
     private UserMapper userMapper;
 
     @Test
-    public void testPage () {
+    public void testPage01 () {
         // SELECT id,user_name,age AS userAge,email,is_deleted FROM t_user WHERE is_deleted=0 LIMIT ?
         Page<User> userPage = new Page<>(1, 3);
         userMapper.selectPage(userPage, null);
@@ -28,6 +28,23 @@ class MybatisplusApplicationTests {
         System.out.println("总页数：" + userPage.getPages());
         System.out.println("是否有上一页：" + userPage.hasPrevious());
         System.out.println("是否有下一页：" + userPage.hasNext());
+    }
+
+    @Test
+    public void testPage02 () {
+        // SELECT COUNT(*) AS total FROM t_user WHERE age > ?
+        // select id,user_name,age,email from t_user where age > ? LIMIT ?
+
+        Page<User> page = new Page<>(1, 3);
+        userMapper.selectPageVo(page, 20);
+        List<User> users = page.getRecords();
+        users.forEach(System.out::println);
+        System.out.println("当前页:"+page.getCurrent());
+        System.out.println("每页显示的条数:"+page.getSize());
+        System.out.println("总记录数:"+page.getTotal());
+        System.out.println("总页数:"+page.getPages());
+        System.out.println("是否有上一页:"+page.hasPrevious());
+        System.out.println("是否有下一页:"+page.hasNext());
     }
 
 }
